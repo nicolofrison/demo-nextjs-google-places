@@ -4,6 +4,18 @@ import { useState } from "react";
 import SearchSelect, { SearchSelectOptions } from "./searchSelect";
 import { placePhoto } from "@/app/api/googlePlaces";
 
+let timeout: NodeJS.Timeout | undefined;
+
+export default function debounce(callback: () => void, milliseconds: number) {
+  if (timeout) {
+    clearTimeout(timeout);
+  }
+  timeout = setTimeout(() => {
+    callback();
+    timeout = undefined;
+  }, milliseconds);
+}
+
 type ItemProps = {
   placesProvider: (searchString: string) => Promise<any[]>;
 };
@@ -74,7 +86,10 @@ export function Item({ placesProvider }: ItemProps) {
         <SearchSelect
           options={addressOptions}
           value={address}
-          onInputChange={retrieveResults}
+          onInputChange={(v) => {
+            setAddress(v);
+            debounce(() => retrieveResults(v), 1000);
+          }}
           onSelectChange={onSelectChange}
         />
       </div>
