@@ -82,13 +82,14 @@ export function Item({ placesProvider }: ItemProps) {
         <textarea
           className="w-2/3"
           rows={10}
+          readOnly
           value={selected && JSON.stringify(selected, null, 2)}
         />
         <div className="w-1/3">
-          {image ? (
+          {selected && image ? (
             <img src={image} alt="Image" />
           ) : (
-            <p>No image provided by the google apis</p>
+            selected && <p>No image provided by the google apis</p>
           )}
         </div>
       </div>
