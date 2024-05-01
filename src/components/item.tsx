@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import SearchSelect, { SearchSelectOptions } from "./searchSelect";
+import { placePhoto } from "@/app/api/googlePlaces";
 
 type ItemProps = {
   placesProvider: (searchString: string) => Promise<any[]>;
@@ -46,12 +47,26 @@ export function Item({ placesProvider }: ItemProps) {
     });
   };
 
-  const onSelectChange = (newValue: string) => {
-    const selectedPlace = places.find((p) => p.id == newValue);
+  function onSelectChange(selectedPlaceId: string) {
+    const place = places.find((p) => p.id === selectedPlaceId);
 
-    setAddress(selectedPlace.formattedAddress);
-    setSelected(selectedPlace);
-  };
+    setAddress(place.formattedAddress);
+    setSelected(place);
+
+    if (!place.photos || place.photos.length === 0) {
+      setImage("");
+
+      return;
+    }
+
+    const photo = place.photos[0];
+
+    placePhoto(photo.name, photo.widthPx)
+      .then((p) => {
+        setImage(p);
+      })
+      .catch((e) => console.error(e));
+  }
 
   return (
     <div>
