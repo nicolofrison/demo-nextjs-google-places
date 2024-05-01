@@ -40,7 +40,7 @@ export function Item({ placesProvider }: ItemProps) {
         p.reduce((acc, curr) => {
           return {
             ...acc,
-            [curr.id]: { text: curr.formattedAddress },
+            [curr.id]: { text: curr.displayName.text },
           };
         }, {} as SearchSelectOptions)
       );
